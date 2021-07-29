@@ -6,7 +6,7 @@ ws/wsClient.html
 
 连接地址 :
 ws://localhost:8083/ws?uid=1&to_uid=2
-参数1和2任意填
+参数1和2任意填，不填则是广播到所有用户
 
 返回结果示例：
 ```json
