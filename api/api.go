@@ -31,9 +31,17 @@ func BootTimeHandler(c *gin.Context) {
 }
 
 func NetIoHandler(c *gin.Context) {
-	ioInfo := system.GetIO()
+	ioInfo := system.GetNetIO()
 
 	var responseDTO ResponseDTO
 
 	c.JSON(http.StatusOK, responseDTO.SuccessWithData("获取上传下载信息", ioInfo))
+}
+
+func IPHandler(c *gin.Context) {
+	ipInfo := system.GetOutboundIP()
+
+	var responseDTO ResponseDTO
+
+	c.JSON(http.StatusOK, responseDTO.SuccessWithData("获取ip信息", ipInfo))
 }

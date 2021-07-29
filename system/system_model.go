@@ -17,3 +17,11 @@ type NetIoInfo struct {
 	SentSpc string `json:"sentSpc"`
 	RecvSpc string `json:"recvSpc"`
 }
+
+type WsModel struct {
+	BootTime   string     `json:"bootTime"`
+	CpuInfo    CpuInfo    `json:"cpuInfo"`
+	MemoryInfo MemoryInfo `json:"memoryInfo"`
+	Ip         string     `json:"ip"`
+	NetIoInfo  NetIoInfo  `json:"netIoInfo"`
+}

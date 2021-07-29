@@ -8,6 +8,7 @@ import (
 	"github.com/shirou/gopsutil/net"
 	"github.com/shirou/gopsutil/v3/mem"
 	"log"
+	localNet "net"
 	"sjw_system_monitor/util"
 	"time"
 )
@@ -77,8 +78,8 @@ func GetDiskPercent() float64 {
 	return diskInfo.UsedPercent
 }
 
-// GetIO 网络下载速度
-func GetIO() NetIoInfo {
+// GetNetIO 网络下载速度
+func GetNetIO() NetIoInfo {
 	counters, _ := net.IOCounters(false)
 	//log.Println(counters[0])
 	log.Println("发送数据大小：", util.FormatByteSize(int64(counters[0].BytesSent)))
@@ -97,8 +98,8 @@ func GetIO() NetIoInfo {
 	log.Println("1秒内上传的差值：", spcSent, "/S")
 	log.Println("1秒内下载的差值：", spcRecv, "/S")
 
-	spcSentStr := fmt.Sprintf("1秒内发送的差值:%s/S", spcSent)
-	spcRecvStr := fmt.Sprintf("1秒内接收的差值:%s/S", spcRecv)
+	spcSentStr := fmt.Sprintf("%s/S", spcSent)
+	spcRecvStr := fmt.Sprintf("%s/S", spcRecv)
 
 	netIoInfo := NetIoInfo{
 		SentSpc: spcSentStr,
@@ -123,4 +124,30 @@ func GetBootTime() string {
 	day, hour, minute, second := util.ResolveTime(spc)
 	bootTimeStr := fmt.Sprintf("%d天%d时%d分%d秒", day, hour, minute, second)
 	return bootTimeStr
+}
+
+// GetOutboundIP  获取ip地址
+func GetOutboundIP() string {
+	conn, err := localNet.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+
+	localAddr := conn.LocalAddr().(*localNet.UDPAddr)
+	fmt.Println(localAddr.String())
+	return localAddr.IP.String()
+}
+
+// WsGetSystemInfo ws获取所有资源信息
+func WsGetSystemInfo() WsModel {
+	wsModel := WsModel{
+		BootTime:   GetBootTime(),
+		CpuInfo:    GetCpuPercent(),
+		MemoryInfo: GetMemPercent(),
+		Ip:         GetOutboundIP(),
+		NetIoInfo:  GetNetIO(),
+	}
+
+	return wsModel
 }
