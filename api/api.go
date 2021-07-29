@@ -14,7 +14,7 @@ func CpuInfoHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, responseDTO.SuccessWithData("获取cpu信息", cpuInfo))
 }
 
-func CpuMemoryHandler(c *gin.Context) {
+func MemoryHandler(c *gin.Context) {
 	memoryInfo := system.GetMemPercent()
 
 	var responseDTO ResponseDTO

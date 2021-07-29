@@ -1,4 +1,9 @@
 # 服务器资源监控程序
+- [x] Cpu
+- [x] Memory
+- [x] NetIO
+- [x] Ip
+- [x] Disk
 ## 测试接口
 http_test.http
 ## ws连接实时获取数据测试
