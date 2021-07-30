@@ -1,10 +1,10 @@
 package system
 
 type CpuInfo struct {
-	CpuCount     int       `json:"cpuCount"`
-	UsePercent   []float64 `json:"usePercent"`
-	TotalPercent string    `json:"totalPercent"`
-	Mhz          string    `json:"mhz"`
+	CpuCount     int      `json:"cpuCount"`
+	UsePercent   []string `json:"usePercent"`
+	TotalPercent string   `json:"totalPercent"`
+	Mhz          string   `json:"mhz"`
 }
 
 type MemoryInfo struct {

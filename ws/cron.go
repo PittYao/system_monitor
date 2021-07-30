@@ -22,7 +22,7 @@ func SystemMonitorCron() {
 	// 执行任务
 	c.AddFunc(time, func() {
 		fmt.Println("tick every " + timeInterval + " second")
-		// todo 获取资源信息
+		// 获取资源信息
 		systemInfo := system.WsGetSystemInfo()
 		jsonData, _ := json.Marshal(systemInfo)
 		// 发送到所有ws连接

@@ -27,9 +27,13 @@ func GetCpuPercent() CpuInfo {
 	percent, _ := cpu.Percent(time.Second, true)
 	log.Println("cpu各个核使用率：", percent)
 
+	var usePercent []string
+
 	total := 0.0
 	for _, value := range percent {
 		total += value
+		usePercentItem := util.Float642String(value)
+		usePercent = append(usePercent, usePercentItem)
 	}
 	// 总核数
 	totalPercent := len(percent) * 100
@@ -45,7 +49,7 @@ func GetCpuPercent() CpuInfo {
 
 	cpuInfo := CpuInfo{
 		CpuCount:     counts,
-		UsePercent:   percent,
+		UsePercent:   usePercent,
 		TotalPercent: strTotalPercent,
 		Mhz:          strMhz,
 	}
