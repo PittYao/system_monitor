@@ -17,7 +17,7 @@ var (
 	TimeFormatter = "2006-01-02 15:04:05"
 )
 
-// GetCpuPercent cpu使用lv
+// GetCpuPercent cpu使用率
 func GetCpuPercent() CpuInfo {
 
 	//cpu 核数
