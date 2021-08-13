@@ -28,6 +28,13 @@ func FormatByteSize(byteSize int64) (size string) {
 	}
 }
 
+func FormatByteSizeForByteAndKbAndMb(byteSize int64) (size []string) {
+	byte := fmt.Sprintf("%.2fB", float64(byteSize)/float64(1))
+	Kb := fmt.Sprintf("%.2fKB", float64(byteSize)/float64(1024))
+	Mb := fmt.Sprintf("%.2fMB", float64(byteSize)/float64(1024*1024))
+	return append(size, byte, Kb, Mb)
+}
+
 // ResolveTime 秒转换为日时分秒和补零操作
 func ResolveTime(seconds int64) (day, hour, minute, second int64) {
 	day = seconds / (24 * 3600)

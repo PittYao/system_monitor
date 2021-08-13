@@ -96,19 +96,36 @@ func GetNetIO() NetIoInfo {
 	log.Println("发送数据大小：", util.FormatByteSize(int64(newCounters[0].BytesSent)))
 	log.Println("接收数据大小：", util.FormatByteSize(int64(newCounters[0].BytesRecv)))
 
-	spcSent := util.FormatByteSize(int64(newCounters[0].BytesSent - counters[0].BytesSent))
-	spcRecv := util.FormatByteSize(int64(newCounters[0].BytesRecv - counters[0].BytesRecv))
+	sendSize := int64(newCounters[0].BytesSent - counters[0].BytesSent)
+	spcSent := util.FormatByteSize(sendSize)
+
+	recvSize := int64(newCounters[0].BytesRecv - counters[0].BytesRecv)
+	spcRecv := util.FormatByteSize(recvSize)
 
 	log.Println("1秒内上传的差值：", spcSent, "/S")
 	log.Println("1秒内下载的差值：", spcRecv, "/S")
 
+	// 格式化为 Kb
 	spcSentStr := fmt.Sprintf("%s/S", spcSent)
 	spcRecvStr := fmt.Sprintf("%s/S", spcRecv)
 
+	// 格式化为 b kb mb 三种格式
+	sendByteAndKbAndMb := util.FormatByteSizeForByteAndKbAndMb(sendSize)
+	recvByteAndKbAndMb := util.FormatByteSizeForByteAndKbAndMb(recvSize)
+
+	netIoInfoSentInfo := NetIoInfoSentInfo{}
+	netIoInfoSentInfo.Formatter(sendByteAndKbAndMb)
+
+	netIoInfoRecvInfo := NetIoInfoRecvInfo{}
+	netIoInfoRecvInfo.Formatter(recvByteAndKbAndMb)
+
 	netIoInfo := NetIoInfo{
-		SentSpc: spcSentStr,
-		RecvSpc: spcRecvStr,
+		SentSpc:           spcSentStr,
+		RecvSpc:           spcRecvStr,
+		NetIoInfoSentInfo: netIoInfoSentInfo,
+		NetIoInfoRecvInfo: netIoInfoRecvInfo,
 	}
+
 	return netIoInfo
 }
 
