@@ -4,10 +4,17 @@
 - [x] NetIO
 - [x] Ip
 - [x] Disk
+## https http
+- 开关https 
+    - @/config/config.json中sever.ssl = [true 开启] [false 关闭] 
 ## 测试接口
 http_test.http
 ## ws连接实时获取数据测试
-ws/wsClient.html
+ws/index.html
+
+浏览器访问地址:
+https://127.0.0.1:8083/static
+查看实时数据
 
 连接地址 :
 ws://localhost:8083/ws?uid=1&to_uid=2
