@@ -1,5 +1,5 @@
 ### cpu信息
-GET http://localhost:8083/cpu
+GET https://localhost:8083/cpu
 Accept: application/json
 
 ### 内存信息
