@@ -17,7 +17,11 @@ type ConfigST struct {
 
 //ServerST struct
 type ServerST struct {
-	HTTPPort string `json:"http_port"`
+	HTTPPort   string `json:"http_port"`
+	HTTPSPort  string `json:"https_port"`
+	Ssl        bool   `json:"ssl"`
+	SslCrtPath string `json:"ssl_crt_path"`
+	SslKeyPath string `json:"ssl_key_path"`
 }
 
 //CronST struct

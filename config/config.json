@@ -1,6 +1,10 @@
 {
   "server": {
-    "http_port": ":8083"
+    "http_port": ":8083",
+    "https_port": ":8083",
+    "ssl": true,
+    "ssl_crt_path": "ssl/ssl.crt",
+    "ssl_key_path": "ssl/ssl.key"
   },
   "cron": {
     "time_interval": "2"

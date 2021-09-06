@@ -131,7 +131,7 @@ func (c *Client) Write() {
 	}
 }
 
-// WsHandler TestHandler socket 连接 中间件 作用:升级协议,用户验证,自定义信息等
+// WsHandler  socket 连接 中间件 作用:升级协议,用户验证,自定义信息等
 func WsHandler(c *gin.Context) {
 	uid := c.Query("uid")
 	touid := c.Query("to_uid")

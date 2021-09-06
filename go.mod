@@ -12,4 +12,5 @@ require (
 	github.com/shirou/gopsutil/v3 v3.21.6
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.7 // indirect
+	github.com/unrolled/secure v1.0.9
 )

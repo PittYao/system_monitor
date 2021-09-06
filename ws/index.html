@@ -8,6 +8,7 @@
     <script type="text/javascript">
     
         $(function() {
+            const wsUrl = "wss://127.0.0.1:8083/ws"
             function getUrlParam(name)
             {
                 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
@@ -45,7 +46,7 @@
             });
 
             if (window["WebSocket"]) {
-                conn = new WebSocket("ws://192.168.99.125:8083/ws?uid="+uid+"&to_uid="+to_uid);
+                conn = new WebSocket(wsUrl+"?uid="+uid+"&to_uid="+to_uid);
                 conn.onclose = function(evt) {
                     appendLog($("<div><b>Connection Closed.</b></div>"))
                 }
