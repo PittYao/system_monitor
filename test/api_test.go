@@ -2,12 +2,14 @@ package test
 
 import (
 	"fmt"
+	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/v3/disk"
 	"sjw_system_monitor/util"
+	"strings"
 	"testing"
 )
 
-func TestGetDisk(t *testing.T) {
+func TestGetWindowsDisk(t *testing.T) {
 	parts, err := disk.Partitions(true)
 	if err != nil {
 		panic(err)
@@ -22,4 +24,16 @@ func TestGetDisk(t *testing.T) {
 			util.FormatByteSizeForGb(diskInfo.Used),
 			util.FormatByteSizeForGb(diskInfo.Free))
 	}
+}
+
+func TestPlatform(t *testing.T) {
+	information, s, s2, _ := host.PlatformInformation()
+
+	contains := strings.Contains(information, "Windows")
+
+	fmt.Println(contains)
+
+	fmt.Println(information)
+	fmt.Println(s)
+	fmt.Println(s2)
 }

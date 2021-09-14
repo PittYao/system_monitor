@@ -23,7 +23,7 @@ func MemoryHandler(c *gin.Context) {
 }
 
 func DiskHandler(c *gin.Context) {
-	diskInfos := system.GetDiskPercent()
+	diskInfos := system.GetDiskInfo()
 
 	var responseDTO ResponseDTO
 

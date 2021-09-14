@@ -17,9 +17,6 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/shirou/gopsutil v3.21.6+incompatible
 	github.com/shirou/gopsutil/v3 v3.21.6
-	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
-	github.com/swaggo/gin-swagger v1.3.1
-	github.com/swaggo/swag v1.7.1
 	github.com/tklauser/go-sysconf v0.3.7 // indirect
 	github.com/ugorji/go v1.2.6 // indirect
 	github.com/unrolled/secure v1.0.9
