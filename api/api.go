@@ -22,6 +22,14 @@ func MemoryHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, responseDTO.SuccessWithData("获取内存信息", memoryInfo))
 }
 
+func DiskHandler(c *gin.Context) {
+	diskInfos := system.GetDiskPercent()
+
+	var responseDTO ResponseDTO
+
+	c.JSON(http.StatusOK, responseDTO.SuccessWithData("获取磁盘信息", diskInfos))
+}
+
 func BootTimeHandler(c *gin.Context) {
 	bootTimeInfo := system.GetBootTime()
 

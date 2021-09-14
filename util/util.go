@@ -47,3 +47,13 @@ func ResolveTime(seconds int64) (day, hour, minute, second int64) {
 func Float642String(data float64) string {
 	return fmt.Sprintf("%g", data)
 }
+
+// Float642StringWith2Point float64转string保留两位小数
+func Float642StringWith2Point(data float64) string {
+	return fmt.Sprintf("%.2f%%", data)
+}
+
+// FormatByteSizeForGb byte字节转为Gb
+func FormatByteSizeForGb(byteSize uint64) (size string) {
+	return fmt.Sprintf("%.2fGB", float64(byteSize)/float64(1024*1024*1024))
+}

@@ -19,6 +19,7 @@ func InitRouter() *gin.Engine {
 	router.GET("/ws", ws.WsHandler)
 	router.GET("/cpu", api.CpuInfoHandler)
 	router.GET("/memory", api.MemoryHandler)
+	router.GET("/disk", api.DiskHandler)
 	router.GET("/bootTime", api.BootTimeHandler)
 	router.GET("/netIo", api.NetIoHandler)
 	router.GET("/ip", api.IPHandler)

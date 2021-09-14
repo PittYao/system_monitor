@@ -14,6 +14,8 @@ ws/index.html
 
 浏览器访问地址:
 https://127.0.0.1:8083/static
+or
+http://127.0.0.1:8083/static
 查看实时数据
 
 连接地址 :
@@ -49,5 +51,30 @@ ws://localhost:8083/ws?uid=1&to_uid=2
     "sentSpc":"481.18KB/S",
     "recvSpc":"22.62MB/S"
   }
+}
+```
+
+## 磁盘信息
+http://127.0.0.1:8083/disk
+```json
+{
+  "code": 200,
+  "message": "获取磁盘信息",
+  "data": [
+    {
+      "device": "C:",
+      "usedPercent": "88.13%",
+      "total": "237.29GB",
+      "used": "209.12GB",
+      "free": "28.18GB"
+    },
+    {
+      "device": "D:",
+      "usedPercent": "60.34%",
+      "total": "102.87GB",
+      "used": "62.07GB",
+      "free": "40.80GB"
+    }
+  ]
 }
 ```

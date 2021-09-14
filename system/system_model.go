@@ -28,6 +28,14 @@ type NetIoInfoSentInfo struct {
 	MB string `json:"MB"`
 }
 
+type DiskInfo struct {
+	Device      string `json:"device"`
+	UsedPercent string `json:"usedPercent"`
+	Total       string `json:"total"`
+	Used        string `json:"used"`
+	Free        string `json:"free"`
+}
+
 func (sent *NetIoInfoSentInfo) Formatter(size []string) {
 	if len(size) >= 3 {
 		sent.B = fmt.Sprintf("%s/S", size[0])

@@ -6,6 +6,10 @@ Accept: application/json
 GET https://localhost:8083/memory
 Accept: application/json
 
+### 磁盘信息
+GET http://localhost:8083/disk
+Accept: application/json
+
 ### 系统启动时长
 GET https://localhost:8083/bootTime
 Accept: application/json

@@ -43,8 +43,13 @@ func GetCpuPercent() CpuInfo {
 	log.Println("cpu总使用率：", strTotalPercent)
 
 	infoStats, _ := cpu.Info()
-	decimal := infoStats[0].Mhz / 1000
-	strMhz := util.Float642String(decimal) + "GHz"
+	var strMhz string
+	if len(infoStats) > 0 {
+		decimal := infoStats[0].Mhz / 1000
+		strMhz = util.Float642String(decimal) + "GHz"
+	} else {
+		strMhz = "0GHz"
+	}
 	log.Println("cpu赫兹： ", strMhz)
 
 	cpuInfo := CpuInfo{
@@ -75,49 +80,76 @@ func GetMemPercent() MemoryInfo {
 	return memoryInfo
 }
 
-// GetDiskPercent 磁盘占用率
-func GetDiskPercent() float64 {
-	parts, _ := disk.Partitions(true)
-	diskInfo, _ := disk.Usage(parts[1].Mountpoint)
-	return diskInfo.UsedPercent
+// GetDiskPercent 磁盘信息
+func GetDiskPercent() []DiskInfo {
+	var diskInfos []DiskInfo
+
+	parts, err := disk.Partitions(true)
+	if err != nil {
+		return diskInfos
+	}
+	for _, part := range parts {
+		diskInfo, _ := disk.Usage(part.Mountpoint)
+		info := DiskInfo{
+			Device:      part.Device,
+			UsedPercent: util.Float642StringWith2Point(diskInfo.UsedPercent),
+			Total:       util.FormatByteSizeForGb(diskInfo.Total),
+			Used:        util.FormatByteSizeForGb(diskInfo.Used),
+			Free:        util.FormatByteSizeForGb(diskInfo.Free),
+		}
+		diskInfos = append(diskInfos, info)
+	}
+	return diskInfos
 }
 
 // GetNetIO 网络下载速度
 func GetNetIO() NetIoInfo {
 	counters, _ := net.IOCounters(false)
 	//log.Println(counters[0])
-	log.Println("发送数据大小：", util.FormatByteSize(int64(counters[0].BytesSent)))
-	log.Println("接收数据大小：", util.FormatByteSize(int64(counters[0].BytesRecv)))
 
-	time.Sleep(time.Second * 1)
+	var spcSentStr string
+	var spcRecvStr string
 
-	newCounters, _ := net.IOCounters(false)
-	//log.Println(newCounters[0])
-	log.Println("发送数据大小：", util.FormatByteSize(int64(newCounters[0].BytesSent)))
-	log.Println("接收数据大小：", util.FormatByteSize(int64(newCounters[0].BytesRecv)))
+	var netIoInfoSentInfo NetIoInfoSentInfo
+	var netIoInfoRecvInfo NetIoInfoRecvInfo
 
-	sendSize := int64(newCounters[0].BytesSent - counters[0].BytesSent)
-	spcSent := util.FormatByteSize(sendSize)
+	if len(counters) > 0 {
+		log.Println("发送数据大小：", util.FormatByteSize(int64(counters[0].BytesSent)))
+		log.Println("接收数据大小：", util.FormatByteSize(int64(counters[0].BytesRecv)))
 
-	recvSize := int64(newCounters[0].BytesRecv - counters[0].BytesRecv)
-	spcRecv := util.FormatByteSize(recvSize)
+		time.Sleep(time.Second * 1)
 
-	log.Println("1秒内上传的差值：", spcSent, "/S")
-	log.Println("1秒内下载的差值：", spcRecv, "/S")
+		newCounters, _ := net.IOCounters(false)
+		//log.Println(newCounters[0])
+		log.Println("发送数据大小：", util.FormatByteSize(int64(newCounters[0].BytesSent)))
+		log.Println("接收数据大小：", util.FormatByteSize(int64(newCounters[0].BytesRecv)))
 
-	// 格式化为 Kb
-	spcSentStr := fmt.Sprintf("%s/S", spcSent)
-	spcRecvStr := fmt.Sprintf("%s/S", spcRecv)
+		sendSize := int64(newCounters[0].BytesSent - counters[0].BytesSent)
+		spcSent := util.FormatByteSize(sendSize)
 
-	// 格式化为 b kb mb 三种格式
-	sendByteAndKbAndMb := util.FormatByteSizeForByteAndKbAndMb(sendSize)
-	recvByteAndKbAndMb := util.FormatByteSizeForByteAndKbAndMb(recvSize)
+		recvSize := int64(newCounters[0].BytesRecv - counters[0].BytesRecv)
+		spcRecv := util.FormatByteSize(recvSize)
 
-	netIoInfoSentInfo := NetIoInfoSentInfo{}
-	netIoInfoSentInfo.Formatter(sendByteAndKbAndMb)
+		log.Println("1秒内上传的差值：", spcSent, "/S")
+		log.Println("1秒内下载的差值：", spcRecv, "/S")
 
-	netIoInfoRecvInfo := NetIoInfoRecvInfo{}
-	netIoInfoRecvInfo.Formatter(recvByteAndKbAndMb)
+		// 格式化为 Kb
+		spcSentStr = fmt.Sprintf("%s/S", spcSent)
+		spcRecvStr = fmt.Sprintf("%s/S", spcRecv)
+
+		// 格式化为 b kb mb 三种格式
+		sendByteAndKbAndMb := util.FormatByteSizeForByteAndKbAndMb(sendSize)
+		recvByteAndKbAndMb := util.FormatByteSizeForByteAndKbAndMb(recvSize)
+
+		netIoInfoSentInfo = NetIoInfoSentInfo{}
+		netIoInfoSentInfo.Formatter(sendByteAndKbAndMb)
+
+		netIoInfoRecvInfo = NetIoInfoRecvInfo{}
+		netIoInfoRecvInfo.Formatter(recvByteAndKbAndMb)
+	} else {
+		netIoInfoSentInfo = NetIoInfoSentInfo{}
+		netIoInfoRecvInfo = NetIoInfoRecvInfo{}
+	}
 
 	netIoInfo := NetIoInfo{
 		SentSpc:           spcSentStr,
