@@ -10,7 +10,6 @@ import (
 	"log"
 	localNet "net"
 	"sjw_system_monitor/util"
-	"syscall"
 	"time"
 )
 
@@ -79,6 +78,28 @@ func GetMemPercent() MemoryInfo {
 		UsedPercent: util.Float642String(v.UsedPercent) + "%",
 	}
 	return memoryInfo
+}
+
+// GetDiskPercent 磁盘信息
+func GetDiskPercent() []DiskInfo {
+	var diskInfos []DiskInfo
+
+	parts, err := disk.Partitions(true)
+	if err != nil {
+		return diskInfos
+	}
+	for _, part := range parts {
+		diskInfo, _ := disk.Usage(part.Mountpoint)
+		info := DiskInfo{
+			Device:      part.Device,
+			UsedPercent: util.Float642StringWith2Point(diskInfo.UsedPercent),
+			Total:       util.FormatByteSizeForGb(diskInfo.Total),
+			Used:        util.FormatByteSizeForGb(diskInfo.Used),
+			Free:        util.FormatByteSizeForGb(diskInfo.Free),
+		}
+		diskInfos = append(diskInfos, info)
+	}
+	return diskInfos
 }
 
 // GetNetIO 网络下载速度
@@ -182,66 +203,4 @@ func WsGetSystemInfo() WsModel {
 	}
 
 	return wsModel
-}
-
-// GetDiskInfo 磁盘信息
-func GetDiskInfo() (diskInfos []DiskInfo) {
-	// 1. judge platform
-	isWindows := util.JudgePlatformIsWindows()
-
-	// Windows
-	if isWindows {
-		return GetWindowsDiskInfo()
-	}
-
-	// Linux default root path
-	return GetLinuxDiskInfo("/")
-}
-
-// GetWindowsDiskInfo windows 磁盘信息
-func GetWindowsDiskInfo() (diskInfos []DiskInfo) {
-	parts, err := disk.Partitions(true)
-	if err != nil {
-		return diskInfos
-	}
-	for _, part := range parts {
-		diskInfo, _ := disk.Usage(part.Mountpoint)
-		info := DiskInfo{
-			Device:      part.Device,
-			UsedPercent: util.Float642StringWith2Point(diskInfo.UsedPercent),
-			Total:       util.FormatByteSizeForGb(diskInfo.Total),
-			Used:        util.FormatByteSizeForGb(diskInfo.Used),
-			Free:        util.FormatByteSizeForGb(diskInfo.Free),
-		}
-		diskInfos = append(diskInfos, info)
-	}
-	return diskInfos
-}
-
-// GetLinuxDiskInfo Linux 磁盘信息
-// path 磁盘路径
-func GetLinuxDiskInfo(path string) (disks []DiskInfo) {
-	fs := syscall.Statfs_t{}
-
-	err := syscall.Statfs(path, &fs)
-
-	if err != nil {
-		return
-	}
-
-	diskTotal := fs.Blocks * uint64(fs.Bsize)
-	diskFree := fs.Bfree * uint64(fs.Bsize)
-	diskUsed := diskTotal - diskFree
-
-	usedPercent := fmt.Sprintf("%.2f%%", float64(diskUsed)/float64(diskTotal)*100)
-
-	info := DiskInfo{
-		Device:      "/",
-		UsedPercent: usedPercent,
-		Total:       util.FormatByteSizeForGb(diskTotal),
-		Used:        util.FormatByteSizeForGb(diskUsed),
-		Free:        util.FormatByteSizeForGb(diskFree),
-	}
-
-	return append(disks, info)
 }
