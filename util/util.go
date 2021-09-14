@@ -61,7 +61,7 @@ func ResolveTime(seconds int64) (day, hour, minute, second int64) {
 }
 
 func Float642String(data float64) string {
-	return fmt.Sprintf("%g", data)
+	return fmt.Sprintf("%.2f", data)
 }
 
 // Float642StringWith2Point float64转string保留两位小数

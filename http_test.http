@@ -1,9 +1,9 @@
 ### cpu信息
-GET https://localhost:8083/cpu
+GET http://localhost:8083/cpu
 Accept: application/json
 
 ### 内存信息
-GET https://localhost:8083/memory
+GET http://localhost:8083/memory
 Accept: application/json
 
 ### 磁盘信息
@@ -11,15 +11,15 @@ GET http://localhost:8083/disk
 Accept: application/json
 
 ### 系统启动时长
-GET https://localhost:8083/bootTime
+GET http://localhost:8083/bootTime
 Accept: application/json
 
 ### 网络1秒内的下载速度
-GET https://localhost:8083/netIo
+GET http://localhost:8083/netIo
 Accept: application/json
 
 ### ip
-GET https://localhost:8083/ip
+GET http://localhost:8083/ip
 Accept: application/json
 
 ###

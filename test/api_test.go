@@ -37,3 +37,15 @@ func TestPlatform(t *testing.T) {
 	fmt.Println(s)
 	fmt.Println(s2)
 }
+
+func TestGetLinuxDisk(t *testing.T) {
+	diskInfo, _ := disk.Usage("/")
+	fmt.Printf(
+		"disk %s usedPercent:%v total:%v used:%v free:%v\n",
+		"/",
+		util.Float642StringWith2Point(diskInfo.UsedPercent),
+		util.FormatByteSizeForGb(diskInfo.Total),
+		util.FormatByteSizeForGb(diskInfo.Used),
+		util.FormatByteSizeForGb(diskInfo.Free))
+
+}

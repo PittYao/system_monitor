@@ -69,37 +69,12 @@ func GetMemPercent() MemoryInfo {
 	// almost every return value is a struct
 	log.Printf("Total: %v, Free:%v, UsedPercent:%f%%\n", v.Total, v.Free, v.UsedPercent)
 
-	// convert to JSON. String() is also implemented
-	log.Println(v)
-
 	memoryInfo := MemoryInfo{
-		FreeMemory:  util.FormatByteSize(int64(v.Free)),
-		TotalMemory: util.FormatByteSize(int64(v.Total)),
-		UsedPercent: util.Float642String(v.UsedPercent) + "%",
+		FreeMemory:  util.FormatByteSizeForGb(v.Free),
+		TotalMemory: util.FormatByteSizeForGb(v.Total),
+		UsedPercent: util.Float642StringWith2Point(v.UsedPercent),
 	}
 	return memoryInfo
-}
-
-// GetDiskPercent 磁盘信息
-func GetDiskPercent() []DiskInfo {
-	var diskInfos []DiskInfo
-
-	parts, err := disk.Partitions(true)
-	if err != nil {
-		return diskInfos
-	}
-	for _, part := range parts {
-		diskInfo, _ := disk.Usage(part.Mountpoint)
-		info := DiskInfo{
-			Device:      part.Device,
-			UsedPercent: util.Float642StringWith2Point(diskInfo.UsedPercent),
-			Total:       util.FormatByteSizeForGb(diskInfo.Total),
-			Used:        util.FormatByteSizeForGb(diskInfo.Used),
-			Free:        util.FormatByteSizeForGb(diskInfo.Free),
-		}
-		diskInfos = append(diskInfos, info)
-	}
-	return diskInfos
 }
 
 // GetNetIO 网络下载速度
@@ -203,4 +178,55 @@ func WsGetSystemInfo() WsModel {
 	}
 
 	return wsModel
+}
+
+// GetDiskInfo 磁盘信息
+func GetDiskInfo() (diskInfos []DiskInfo) {
+	// judge platform
+	isWindows := util.JudgePlatformIsWindows()
+
+	// Windows
+	if isWindows {
+		return GetWindowsDiskInfo()
+	}
+
+	// Linux default root path
+	return GetLinuxDiskInfo("/")
+}
+
+// GetWindowsDiskInfo windows 磁盘信息
+func GetWindowsDiskInfo() (diskInfos []DiskInfo) {
+	parts, err := disk.Partitions(true)
+	if err != nil {
+		return diskInfos
+	}
+	for _, part := range parts {
+		diskInfo, _ := disk.Usage(part.Mountpoint)
+		info := DiskInfo{
+			Device:      part.Device,
+			UsedPercent: util.Float642StringWith2Point(diskInfo.UsedPercent),
+			Total:       util.FormatByteSizeForGb(diskInfo.Total),
+			Used:        util.FormatByteSizeForGb(diskInfo.Used),
+			Free:        util.FormatByteSizeForGb(diskInfo.Free),
+		}
+		diskInfos = append(diskInfos, info)
+	}
+	return diskInfos
+}
+
+// GetLinuxDiskInfo Linux 磁盘信息
+// path 磁盘路径
+func GetLinuxDiskInfo(path string) (disks []DiskInfo) {
+
+	diskInfo, _ := disk.Usage(path)
+
+	info := DiskInfo{
+		Device:      path,
+		UsedPercent: util.Float642StringWith2Point(diskInfo.UsedPercent),
+		Total:       util.FormatByteSizeForGb(diskInfo.Total),
+		Used:        util.FormatByteSizeForGb(diskInfo.Used),
+		Free:        util.FormatByteSizeForGb(diskInfo.Free),
+	}
+
+	return append(disks, info)
 }
