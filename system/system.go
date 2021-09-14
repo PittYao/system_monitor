@@ -10,7 +10,6 @@ import (
 	"log"
 	localNet "net"
 	"sjw_system_monitor/util"
-	"syscall"
 	"time"
 )
 
@@ -70,13 +69,10 @@ func GetMemPercent() MemoryInfo {
 	// almost every return value is a struct
 	log.Printf("Total: %v, Free:%v, UsedPercent:%f%%\n", v.Total, v.Free, v.UsedPercent)
 
-	// convert to JSON. String() is also implemented
-	log.Println(v)
-
 	memoryInfo := MemoryInfo{
-		FreeMemory:  util.FormatByteSize(int64(v.Free)),
-		TotalMemory: util.FormatByteSize(int64(v.Total)),
-		UsedPercent: util.Float642String(v.UsedPercent) + "%",
+		FreeMemory:  util.FormatByteSizeForGb(v.Free),
+		TotalMemory: util.FormatByteSizeForGb(v.Total),
+		UsedPercent: util.Float642StringWith2Point(v.UsedPercent),
 	}
 	return memoryInfo
 }
@@ -186,7 +182,7 @@ func WsGetSystemInfo() WsModel {
 
 // GetDiskInfo 磁盘信息
 func GetDiskInfo() (diskInfos []DiskInfo) {
-	// 1. judge platform
+	// judge platform
 	isWindows := util.JudgePlatformIsWindows()
 
 	// Windows
@@ -221,26 +217,15 @@ func GetWindowsDiskInfo() (diskInfos []DiskInfo) {
 // GetLinuxDiskInfo Linux 磁盘信息
 // path 磁盘路径
 func GetLinuxDiskInfo(path string) (disks []DiskInfo) {
-	fs := syscall.Statfs_t{}
 
-	err := syscall.Statfs(path, &fs)
-
-	if err != nil {
-		return
-	}
-
-	diskTotal := fs.Blocks * uint64(fs.Bsize)
-	diskFree := fs.Bfree * uint64(fs.Bsize)
-	diskUsed := diskTotal - diskFree
-
-	usedPercent := fmt.Sprintf("%.2f%%", float64(diskUsed)/float64(diskTotal)*100)
+	diskInfo, _ := disk.Usage(path)
 
 	info := DiskInfo{
-		Device:      "/",
-		UsedPercent: usedPercent,
-		Total:       util.FormatByteSizeForGb(diskTotal),
-		Used:        util.FormatByteSizeForGb(diskUsed),
-		Free:        util.FormatByteSizeForGb(diskFree),
+		Device:      path,
+		UsedPercent: util.Float642StringWith2Point(diskInfo.UsedPercent),
+		Total:       util.FormatByteSizeForGb(diskInfo.Total),
+		Used:        util.FormatByteSizeForGb(diskInfo.Used),
+		Free:        util.FormatByteSizeForGb(diskInfo.Free),
 	}
 
 	return append(disks, info)
