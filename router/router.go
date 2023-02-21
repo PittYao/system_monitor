@@ -2,7 +2,6 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/unrolled/secure"
 	"log"
 	"net/http"
 	"sjw_system_monitor/api"
@@ -29,7 +28,7 @@ func InitRouter() *gin.Engine {
 
 	if Config.Server.Ssl == true {
 		// 启动https
-		router.Use(TlsHandler())
+		//router.Use(TlsHandler())
 		err := router.RunTLS(Config.Server.HTTPSPort, Config.Server.SslCrtPath, Config.Server.SslKeyPath)
 		if err != nil {
 			log.Fatalln("启动https失败 ", err)
@@ -43,21 +42,4 @@ func InitRouter() *gin.Engine {
 	}
 
 	return router
-}
-
-func TlsHandler() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		secureMiddleware := secure.New(secure.Options{
-			SSLRedirect: true,
-			SSLHost:     Config.Server.HTTPSPort,
-		})
-		err := secureMiddleware.Process(c.Writer, c.Request)
-
-		// If there was an error, do not continue.
-		if err != nil {
-			return
-		}
-
-		c.Next()
-	}
 }

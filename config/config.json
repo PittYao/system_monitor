@@ -3,8 +3,8 @@
     "http_port": ":8083",
     "https_port": ":8083",
     "ssl": false,
-    "ssl_crt_path": "ssl/ssl.crt",
-    "ssl_key_path": "ssl/ssl.key"
+    "ssl_crt_path": "ssl/127.0.0.1.pem",
+    "ssl_key_path": "ssl/127.0.0.1-key.pem"
   },
   "cron": {
     "time_interval": "2"
