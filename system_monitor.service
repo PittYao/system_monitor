@@ -1,0 +1,13 @@
+[Unit]
+Description=System Monitor Service
+After=network.target
+
+[Service]
+WorkingDirectory=/home/project/backend/system_monitor
+ExecStart=/home/project/backend/system_monitor/system_monitor_x86
+Restart=always
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+powershell中执行
+
+$env:CGO_ENABLED = 0
+$env:GOOS = "linux"
+$env:GOARCH = "arm64"
+go build -o system_monitor_arm main.go
